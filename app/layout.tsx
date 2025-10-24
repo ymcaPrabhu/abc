@@ -3,8 +3,8 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Task Organizer",
-  description: "Team task management with Supabase and Google OAuth",
+  title: "Indian Budget Management System",
+  description: "Coordinating and developing India's budget through digital processes",
 };
 
 export default function RootLayout({
