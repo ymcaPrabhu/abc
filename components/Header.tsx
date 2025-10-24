@@ -11,9 +11,9 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
-              Task Organizer
+              Indian Budget Management System
             </h1>
-            <p className="text-sm text-gray-600">Team Dashboard</p>
+            <p className="text-sm text-gray-600">Government of India</p>
           </div>
 
           {profile && (
