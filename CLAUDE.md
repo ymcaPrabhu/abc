@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A collaborative team task management application built with Next.js 14, Supabase, and Google OAuth. Team members can sign in with Google, create tasks, and view all team tasks on a shared dashboard. The app supports role-based access control with four user roles.
+A comprehensive Budget Management System for the Government of India, built using the BMAD (Breakthrough Method for Agile AI-Driven Development) methodology. This system enables coordinating and developing India's budget through digital processes, supporting budget proposal creation, multi-level approval workflows, expenditure tracking, and real-time analytics. Built with Next.js 14, Supabase (PostgreSQL), and Google OAuth authentication.
 
 ## Tech Stack
 
@@ -49,22 +49,34 @@ npm run lint
 ### Directory Structure
 
 - `app/` - Next.js App Router pages and layouts
-  - `page.tsx` - Main page with authentication check and team dashboard
+  - `page.tsx` - Main landing/login page or dashboard router
   - `layout.tsx` - Root layout with AuthProvider wrapper
   - `auth/callback/` - OAuth callback route handler
+  - `dashboard/` - Main dashboard and budget management pages
+  - `budgets/` - Budget proposal pages
+  - `schemes/` - Scheme management pages
+  - `expenditures/` - Expenditure tracking pages
+  - `reports/` - Reporting and analytics pages
+  - `admin/` - System administration pages
   - `globals.css` - Global Tailwind styles
 - `components/` - React components
-  - `TaskForm.tsx` - Form for adding new tasks
-  - `TaskList.tsx` - Team task list showing all tasks with user info
-  - `LoginPage.tsx` - Google OAuth login interface
-  - `Header.tsx` - Navigation header with user info and logout
-  - `Providers.tsx` - Client-side provider wrapper
+  - `auth/` - Login, user menu, protected routes
+  - `layout/` - Header, sidebar, navigation
+  - `dashboard/` - Dashboard widgets, charts, stats
+  - `budgets/` - Budget forms, lists, approval UI
+  - `schemes/` - Scheme management components
+  - `expenditures/` - Expenditure forms and tracking
+  - `reports/` - Report builders, export functionality
+  - `common/` - Reusable UI components
 - `contexts/` - React contexts
-  - `AuthContext.tsx` - Authentication state and methods
+  - `AuthContext.tsx` - Authentication state and user profile
 - `lib/` - Utilities and configurations
-  - `supabase.ts` - Supabase client initialization
+  - `supabase/` - Supabase client initialization
+  - `utils/` - Utility functions (formatters, authorization, etc.)
 - `types/` - TypeScript type definitions
-  - `index.ts` - Shared types (Task, UserProfile, UserRole)
+  - `index.ts` - All types for budget system
+- `supabase/migrations/` - Database migration files
+- `docs/` - Project documentation (PRD, Architecture, Development Stories)
 
 ### Database Schema
 
@@ -99,18 +111,43 @@ tasks (
 - Users can only update/delete their own tasks
 - Users can read their own profile
 
-**User Roles:** Assistive, Section Officer (default), Under Secretary, Professional Creator
+**User Roles:**
+1. **Finance Ministry Admin** - Full system access, final budget approvals, system administration
+2. **Budget Division Officer** - Cross-ministry budget compilation and analysis
+3. **Ministry Secretary** - Ministry-level budget management and approvals
+4. **Department Head** - Department budget planning and scheme management
+5. **Section Officer** (default) - Budget proposal creation, expenditure recording
+6. **Auditor** - Read-only access for compliance and audit purposes
+
+**Core Tables:**
+- `ministries` - Government ministries
+- `departments` - Departments within ministries
+- `schemes` - Government schemes/programs
+- `budget_proposals` - Budget requests with line items
+- `budget_allocations` - Sanctioned budgets with quarterly allocation
+- `expenditures` - Actual spending records
+- `approval_workflows` - Multi-stage approval process
+- `audit_logs` - Complete audit trail
 
 ### Key Patterns
 
-- **Authentication Flow**: Google OAuth → Supabase Auth → Auto-create user profile
-- **Client Components**: All interactive components use `"use client"` directive
-- **State Management**: React Context (AuthContext) for auth, useState for local state
-- **Data Fetching**: Supabase client calls with joins to fetch user profiles
-- **Authorization**: RLS policies enforce task ownership, UI conditionally shows actions
-- **Task Ownership**: Each task has user_id, only owners can toggle/delete
-- **Team Dashboard**: All authenticated users see all tasks with creator info
-- **Styling**: Tailwind utility classes with responsive design
+- **BMAD Methodology**: Project developed using Breakthrough Method for Agile AI-Driven Development
+  - Comprehensive PRD in `docs/PRD.md`
+  - System architecture in `docs/ARCHITECTURE.md`
+  - Development stories in `docs/DEVELOPMENT_STORIES.md`
+- **Authentication Flow**: Google OAuth → Supabase Auth → Auto-create user profile with default role
+- **Authorization**: Row-Level Security (RLS) policies based on user role and organizational hierarchy
+- **Multi-tier Hierarchy**: Ministry → Department → Scheme → Budget Proposal → Line Items
+- **Approval Workflows**: Configurable multi-stage approval process (Department → Ministry → Finance Ministry)
+- **Budget Cycle**: Proposal → Review → Approval → Allocation → Expenditure → Monitoring
+- **Financial Year Based**: All data organized by Indian financial year (April-March)
+- **Real-time Analytics**: Dashboard with budget utilization, expenditure trends, variance analysis
+- **Currency Formatting**: Indian Rupee formatting in Lakhs and Crores
+- **Audit Trail**: Complete audit logging for compliance and transparency
+- **Client Components**: Interactive UI components with `"use client"` directive
+- **State Management**: React Context (AuthContext) for auth, Zustand for complex state
+- **Data Fetching**: Supabase client with joins and RLS-filtered queries
+- **Styling**: Tailwind CSS with utility classes and responsive design
 
 ## Deployment
 
