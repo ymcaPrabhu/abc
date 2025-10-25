@@ -11,7 +11,8 @@ import {
   BarChart3,
   Users,
   Settings,
-  CheckCircle
+  CheckCircle,
+  DollarSign
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { isAdmin, hasRole } from "@/lib/utils/authorization";
@@ -27,6 +28,7 @@ const navigation: NavItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Schemes", href: "/dashboard/schemes", icon: Building2 },
   { name: "Budget Proposals", href: "/dashboard/budgets", icon: FileText },
+  { name: "Budget Allocations", href: "/dashboard/allocations", icon: DollarSign },
   { name: "Expenditures", href: "/dashboard/expenditures", icon: Wallet },
   { name: "Approvals", href: "/dashboard/approvals", icon: CheckCircle },
   { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
