@@ -8,6 +8,7 @@ import { Scheme, Ministry, Department, ProposalType, BudgetType } from "@/types"
 import { useAuth } from "@/contexts/AuthContext";
 import { canCreateBudgetProposal } from "@/lib/utils/authorization";
 import { getCurrentFinancialYear, formatINR } from "@/lib/utils/formatters";
+import { createWorkflow } from "@/lib/utils/workflow";
 import {
   Button,
   Input,
@@ -48,7 +49,7 @@ export default function NewBudgetProposalPage() {
   const [formData, setFormData] = useState<FormData>({
     scheme_id: searchParams.get("scheme_id") || "",
     financial_year: getCurrentFinancialYear(),
-    proposal_type: "New",
+    proposal_type: "Budget Estimate",
     justification: "",
     objectives: "",
     expected_outcomes: "",
@@ -270,6 +271,20 @@ export default function NewBudgetProposalPage() {
 
       if (lineItemsError) throw lineItemsError;
 
+      // Create workflow if submitted
+      if (status === "Submitted") {
+        const { workflowId, error: workflowError } = await createWorkflow(
+          "Budget Proposal",
+          proposal.id,
+          profile?.id || ""
+        );
+
+        if (workflowError) {
+          console.error("Error creating workflow:", workflowError);
+          toast.warning("Proposal created but workflow creation failed");
+        }
+      }
+
       toast.success(`Budget proposal ${status === "Draft" ? "saved as draft" : "submitted"} successfully`);
       router.push(`/dashboard/budgets/${proposal.id}`);
     } catch (error: any) {
@@ -399,9 +414,9 @@ export default function NewBudgetProposalPage() {
                   value={formData.proposal_type}
                   onChange={(e) => handleChange("proposal_type", e.target.value as ProposalType)}
                   options={[
-                    { value: "New", label: "New" },
-                    { value: "Revised", label: "Revised" },
-                    { value: "Supplementary", label: "Supplementary" },
+                    { value: "Budget Estimate", label: "Budget Estimate" },
+                    { value: "Revised Estimate", label: "Revised Estimate" },
+                    { value: "Supplementary Grant", label: "Supplementary Grant" },
                   ]}
                   disabled={loading}
                 />

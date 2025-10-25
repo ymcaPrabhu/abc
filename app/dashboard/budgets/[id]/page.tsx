@@ -9,6 +9,7 @@ import { BudgetProposal, BudgetLineItem, Scheme, Ministry, Department, ProposalS
 import { useAuth } from "@/contexts/AuthContext";
 import { canCreateBudgetProposal } from "@/lib/utils/authorization";
 import { formatINR, formatDate } from "@/lib/utils/formatters";
+import { createWorkflow } from "@/lib/utils/workflow";
 import {
   Button,
   Card,
@@ -120,12 +121,25 @@ export default function BudgetProposalDetailPage() {
     try {
       const { error } = await supabase
         .from("budget_proposals")
-        .update({ status: "Submitted" })
+        .update({ status: "Submitted", submitted_at: new Date().toISOString() })
         .eq("id", proposalId);
 
       if (error) throw error;
 
-      toast.success("Budget proposal submitted for approval");
+      // Create approval workflow
+      const { workflowId, error: workflowError } = await createWorkflow(
+        "Budget Proposal",
+        proposalId,
+        profile?.id || ""
+      );
+
+      if (workflowError) {
+        console.error("Error creating workflow:", workflowError);
+        toast.warning("Proposal submitted but workflow creation failed");
+      } else {
+        toast.success("Budget proposal submitted for approval");
+      }
+
       fetchProposal();
     } catch (error: any) {
       console.error("Error submitting proposal:", error);
